@@ -55,21 +55,94 @@ clrButton.addEventListener('click', event => {
   }
 });
 
+const fbInput: HTMLElement = document.getElementById('fb-input');
 const fbOutput: HTMLElement = document.getElementById('fb-output');
 function fizzbuzz() {
-  fbOutput.innerHTML = '<h2>fizzbuzz</h2>';
-  for (let i = 1; i < 101; i++) {
-    if (i % 3 == 0 && i % 5 == 0) {
-      // console.log('fizzbuzz', i);
-      fbOutput.innerHTML += '<div>fizzbuzz ' + i + '</div>';
-    } else if (i % 3 == 0) {
-      // console.log('fizz', i);
-      fbOutput.innerHTML += '<div>fizz ' + i + '</div>';
-    } else if (i % 5 == 0) {
-      // console.log('buzz', i);
-      fbOutput.innerHTML += '<div>buzz ' + i + '</div>';
+  if (fbInput.fbmin.value > fbInput.fbmax.value) {
+    fbOutput.innerHTML = '<h2>min is greater than max</h2>';
+  } else {
+    if (fbOutput.innerHTML != '') {
+      fbOutput.innerHTML = '<h2>fizzbuzz again</h2>';
     } else {
-      // console.log('booo', i);
+      fbOutput.innerHTML = '<h2>fizzbuzz</h2>';
+    }
+    for (let i = fbInput.fbmin.value; i <= fbInput.fbmax.value; i++) {
+      if (i % 3 == 0 && i % 5 == 0) {
+        // console.log('fizzbuzz', i);
+        fbOutput.innerHTML += '<div>fizzbuzz ' + i + '</div>';
+      } else if (i % 3 == 0) {
+        // console.log('fizz', i);
+        fbOutput.innerHTML += '<div>fizz ' + i + '</div>';
+      } else if (i % 5 == 0) {
+        // console.log('buzz', i);
+        fbOutput.innerHTML += '<div>buzz ' + i + '</div>';
+      } else {
+        // console.log('booo', i);
+      }
     }
   }
 }
+
+// Create a "Car" class.  A car has a rego and speed.  A car can increase it's speed to a maximum of 120km/h.
+class Car {
+  rego: string;
+  speed: number;
+  maxSpeed: number = 120;
+
+  constructor(irego: string, ispeed: number) {
+    this.rego = irego;
+    this.speed = ispeed;
+  }
+
+  increaseSpeed(spd: number): void {
+    this.speed += spd;
+    if (this.speed > this.maxSpeed) {
+      this.speed = this.maxSpeed;
+    }
+  }
+}
+
+// Create a list/array of 3 cars.  Set the initial speed of car1 to 0, car2 to 10 and car3 to 20.
+let car1 = new Car('abc123', 0);
+let car2 = new Car('xyz123', 10);
+let car3 = new Car('fff000', 20);
+
+let cars: Car[] = [car1, car2, car3];
+
+// Create a dropdown to select a car.  When a car is selected display the speed.
+const carsDropdownList: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('carsDropdown')
+);
+for (let i = 0; i < cars.length; i++) {
+  carsDropdownList.innerHTML +=
+    '<option value="' + cars[i].rego + '">' + cars[i].rego + '</option>';
+}
+updateSpeed();
+carsDropdownList.addEventListener('input', event => {
+  updateSpeed();
+});
+
+function updateSpeed() {
+  for (let i = 0; i < cars.length; i++) {
+    if (cars[i].rego == carsDropdownList.value) {
+      document.getElementById('speed2').innerHTML = String(cars[i].speed);
+    }
+  }
+}
+
+// Create an input and button to change the speed of the selected car.
+const speedInput: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('speedIncrease')
+);
+const speedButton: HTMLInputElement = <HTMLInputElement>(
+  document.getElementById('increase-btn')
+);
+
+speedButton.addEventListener('click', event => {
+  for (let i = 0; i < cars.length; i++) {
+    if (cars[i].rego == carsDropdownList.value) {
+      cars[i].increaseSpeed(Number(speedInput.value));
+    }
+  }
+  updateSpeed();
+});
